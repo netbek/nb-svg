@@ -1,0 +1,28 @@
+# Patch/diff artifacts
+*.patch
+*.diff
+*.orig
+*.rej
+interdiff*.txt
+# emacs artifacts
+*~
+\#*\#
+# VI swap file
+*.swp
+# Hidden files
+.DS*
+.project
+# Windows links
+*.lnk
+# Temporary files
+tmp*
+# Installed Drupal site
+sites/*/files/
+sites/*/settings.php
+# IDE's project directory
+nbproject
+.idea
+# Vendor directory
+src/vendor/
+# Node.js modules directory
+node_modules/
