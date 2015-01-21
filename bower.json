@@ -18,5 +18,8 @@
 		"test",
 		"tests",
 		"vendor"
-	]
+	],
+	"dependencies": {
+		"angular": "~1.2.28"
+	}
 }
