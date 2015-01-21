@@ -16,13 +16,10 @@ interdiff*.txt
 *.lnk
 # Temporary files
 tmp*
-# Installed Drupal site
-sites/*/files/
-sites/*/settings.php
-# IDE's project directory
+# IDE project directory
 nbproject
 .idea
-# Vendor directory
-src/vendor/
 # Node.js modules directory
 node_modules/
+# Bower components directory
+bower_components/
