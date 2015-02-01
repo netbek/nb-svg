@@ -12,21 +12,63 @@
 	angular
 		.module('nb.svg', [])
 		.directive('nbSvgViewBox', nbSvgViewBox)
-		.directive('nbSvgXlinkHref', nbSvgXlinkHref);
+		.directive('nbSvgViewBoxOnce', nbSvgViewBoxOnce)
+		.directive('nbSvgXlinkHref', nbSvgXlinkHref)
+		.directive('nbSvgXlinkHrefOnce', nbSvgXlinkHrefOnce);
 
 	function nbSvgViewBox () {
 		return {
-			link: function (scope, element, attrs) {
-				function set (value) {
-					if (!value || !attrs.width || !attrs.height) {
-						return;
+			link: function (scope, element, attrs, controller) {
+				var watch = scope.$watch(function attrs (scope) {
+					return {
+						width: attrs.width,
+						height: attrs.height
+					};
+				}, function (newValue, oldValue, scope) {
+					if (newValue.width && newValue.height) {
+						element.attr('viewBox', '0 0 ' + newValue.width + ' ' + newValue.height);
+					}
+				}, true);
+
+				scope.$on('$destroy', function () {
+					watch();
+				});
+			}
+		};
+	}
+
+	/**
+	 * One-time binding.
+	 */
+	function nbSvgViewBoxOnce () {
+		return {
+			link: function (scope, element, attrs, controller) {
+				var watch = scope.$watch(function attrs (scope) {
+					var width, height;
+
+					if (attrs['data-width'] && attrs['data-height']) {
+						width = attrs['data-width'];
+						height = attrs['data-height'];
+					}
+					else if (attrs.width && attrs.height) {
+						width = attrs.width;
+						height = attrs.height;
 					}
 
-					element.attr('viewBox', '0 0 ' + attrs.width + ' ' + attrs.height);
-				}
+					return {
+						width: width,
+						height: height
+					};
+				}, function (newValue, oldValue, scope) {
+					if (newValue.width && newValue.height) {
+						element.attr('viewBox', '0 0 ' + newValue.width + ' ' + newValue.height);
+					}
+					watch();
+				}, true);
 
-				attrs.$observe('width', set);
-				attrs.$observe('height', set);
+				scope.$on('$destroy', function () {
+					watch();
+				});
 			}
 		};
 	}
@@ -42,6 +84,33 @@
 						return;
 					}
 
+					attrs.$set('xlink:href', value);
+
+					if ($sniffer.msie) {
+						element.prop('xlink:href', value);
+					}
+				});
+
+				scope.$on('$destroy', function () {
+					// If IE, then remove the property before the DOM element is
+					// removed, to prevent memory leak in IE < 9.
+					if ($sniffer.msie) {
+						element.removeProp('xlink:href');
+					}
+				});
+			}
+		};
+	}
+
+	/**
+	 * One-time binding.
+	 */
+	nbSvgXlinkHrefOnce.$inject = ['$sniffer'];
+	function nbSvgXlinkHrefOnce ($sniffer) {
+		return {
+			priority: 99,
+			link: function (scope, element, attrs) {
+				attrs.$observe('nb-svg-xlink-href-once-value', function (value) {
 					attrs.$set('xlink:href', value);
 
 					if ($sniffer.msie) {
