@@ -26,7 +26,10 @@ module.exports = function (grunt) {
 				' */\n'].join('\n')
 		},
 		jshint: {
-			all: ['Gruntfile.js', 'tasks/**/*.js', 'tests/tests/*.js']
+			options: {
+				jshintrc: true
+			},
+			all: ['Gruntfile.js', 'tasks/**/*.js', 'tests/tests/*.js', 'src/**/*.js', 'demo/**/*.js']
 		},
 		clean: {
 			init: ['build', 'dist'],
@@ -50,6 +53,7 @@ module.exports = function (grunt) {
 	});
 
 	grunt.registerTask('default', [
+		'jshint',
 		'clean:init',
 		'concat',
 		'uglify',
